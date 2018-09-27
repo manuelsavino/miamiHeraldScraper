@@ -1,47 +1,52 @@
-$(function () {
-
-  $.getJSON("/api/article", function (res) {
+function getArticles(saved) {
+  console.log("get articles called")
+  $("#results").empty()
+  $.getJSON(`/api/article/${saved}`, function (res) {
+    var rowElement = $("<div>").attr({ class: "row" })
     res.forEach(function (e) {
-      var row = $("div").attr("class", "row")
-      var card =
-        `<div class="col-lg-3 col-md-4 my-3">
-        <div class="card mx-auto" style="width: 17rem; height: 20rem;">
-          <a href="${e.url}">
-            <div class="card-body">
-              <h5 class="card-title">
-                ${e.headLine}              
-              </h5>
-              <p class="card-text">
-                ${e.summary.slice(0, 100)}
-              </p>
-              <a href="#" class="btn btn-primary save-article" data-id=${e._id} </a>Save Article
-          </a>
-        </div>
-        </a>
-      </div>
-    </div>`
-      row.append(card)
-      $(".container").append(row)
+      var col = $("<div>").attr({ class: "col-lg-3 col-md-4" })
+      var card = $("<div>").attr({ class: "card mx-auto my-2", style: "width: 17rem; height: 20rem;" })
+      var cardBody = $("<div>").attr({ class: "card-body" })
+      var link = $("<a>").attr({ href: e.url }).append(e.headLine)
+      var cardHeading = $("<h5>").attr({ class: "card-title" })
+      cardHeading.append(link)
+      var cardP = $("<p>").attr({ class: "card-test" }).append(e.summary.slice(0, 100))
+      cardBody.append(cardHeading)
+      cardBody.append(cardP)
+      if(!e.saved){
+        var button = $("<button>").attr({ class: "btn btn-danger save-article", 'data-id': e._id }).data("id", e.id).append("Save Article")
+        cardBody.append(button)
+      }
+      else if(e.saved)
+      {
+        var notesButton = $("<button>").attr({ class: "btn btn-primary notes", 'data-id': e._id }).data("id", e.id).append("Notes")
+        var deleteButton = $("<button>").attr({ class: "btn btn-danger delete", 'data-id': e._id }).data("id", e.id).append("X")
+        cardBody.append(notesButton)
+        cardBody.append(deleteButton)
+      }
+      card.append(cardBody)
+      col.append(card)
+      rowElement.append(card)
+      $("#results").append(rowElement)
     })
   })
+}
 
+  
   $(".scrape").on("click", function () {
-    $.ajax({
-      url: `api/scrape/`,
-      type: 'GET',
+    $.get(`api/scrape/`,function(){
+      getArticles("unsaved");
     });
-    location.reload(true);
   })
 
-  console.log("hello");
   $(document).on("click", ".save-article", function () {
     var id = $(this).data("id");
     $.ajax({
       url: `api/article/`,
       type: "PUT",
-      data: { id: id, saved: true }
+      data: {id: id, saved: true }
     });
-    location.reload(true);
+    getArticles("unsaved")
   });
 
   $(document).on("click", ".delete", function () {
@@ -52,6 +57,11 @@ $(function () {
       type: 'DELETE',
       data: { id: id }
     });
-    location.reload(true);
+    getArticles("saved")
   });
-});
+
+
+  $(document).on("click", ".notes", function(){
+    $('#myModal').modal('show');
+  })
+

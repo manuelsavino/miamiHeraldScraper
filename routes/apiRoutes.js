@@ -32,19 +32,20 @@ router.get("/scrape", function (req, res, next) {
         .children(".posterframe-wrapper")
         .children("img")
         .attr("src");
-
-      db.Article.create(article).then(function (dbArticle) {
-        db.Article.find().then(function (resp) {
-          res.render("index", { articles: resp });
-        });
-      });
+      db.Article.findOne({headLine: article.headLine}).then(resp => {
+        if(!resp){
+          console.log("Not FOunds, creating")
+          db.Article.create(article).then(function (dbArticle) {});
+        }else{
+          console.log("already in there")
+        }
+      })
+      
     });
-
   });
 
-  db.Article.find().then(function (resp) {
-    res.render("index", { articles: resp });
-  })
+  res.sendStatus(200);
+  
 
 });
 
@@ -72,8 +73,24 @@ router.delete("/article/", function (req, res) {
 
 })
 
-router.get("/article", function (req, res) {
-  db.Article.find().then(function (resp) {
+router.get("/article/:status", function (req, res) {
+  var status = req.params.status
+  var query = null
+  if (status === "unsaved")
+  {
+    query = false
+  }
+  else{
+    query = true
+  }
+  db.Article.find({saved: query}).then(function (resp) {
+    res.json(resp)
+    console.log("getRoute")
+  })
+})
+
+router.get("/savedArticle", function (req, res) {
+  db.Article.find({saved: true}).then(function (resp) {
     res.json(resp)
     console.log("getRoute")
   })
