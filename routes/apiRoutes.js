@@ -4,7 +4,6 @@ var db = require("../models/");
 var cheerio = require("cheerio");
 var request = require("request");
 
-/* GET users listing. */
 router.get("/scrape", function (req, res) {
   var results = []
   request("https://www.miamiherald.com/news/", function (err, resp, html) {
