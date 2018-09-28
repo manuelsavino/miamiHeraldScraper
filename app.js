@@ -4,7 +4,7 @@ var mongoose = require("mongoose");
 var PORT = process.env.PORT || 3000;
 
 mongoose.connect(
-  process.env.MONGOLAB_URI || "mongodb://localhost:27017/miamiHerald",
+  process.env.MONGODB_URI || "mongodb://localhost:27017/miamiHerald",
   { useNewUrlParser: true }
 );
 
