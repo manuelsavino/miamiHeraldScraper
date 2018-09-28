@@ -1,11 +1,4 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
 
-a {
-  color: #00b7ff;
-}
 
 /* .test {
   background-image: url("../images/newsPaper.jpg") no-repeat center center;
@@ -13,3 +6,18 @@ a {
   height: 300px;
   width: 100%;
 } */
+
+.card{
+  position: relative;
+}
+
+.save-article, .notes{
+  position: absolute;
+  bottom: 10;
+}
+
+.delete{
+  position: absolute;
+  bottom: 10;
+  right: 20;
+}

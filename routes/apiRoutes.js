@@ -83,7 +83,6 @@ router.put("/article/", function (req, res) {
 });
 
 router.delete("/article/", function (req, res) {
-  console.log("detele hit")
   var id = req.body.id;
   db.Article.findOneAndDelete({ _id: id }).then(function (resp) {
     console.log(resp)
@@ -127,5 +126,12 @@ router.post("/article/note", function (req, res) {
   })
 
 })
+
+router.delete("/note", function (req, res) {
+  var id = req.body.id;
+  db.Note.findOneAndDelete({ _id: id }).then(function (resp) {
+    res.sendStatus(200);
+  })
+});
 
 module.exports = router;

@@ -1,5 +1,7 @@
+
 function getArticles(saved) {
   $("#results").empty()
+  //call to scrape the miami herald site and build the cards based on the response
   $.getJSON(`/api/article/status/${saved}`, function (res) {
     var rowElement = $("<div>").attr({ class: "row" })
     res.forEach(function (e) {
@@ -12,8 +14,9 @@ function getArticles(saved) {
       var cardP = $("<p>").attr({ class: "card-test" }).append(e.summary.slice(0, 100))
       cardBody.append(cardHeading)
       cardBody.append(cardP)
+      //if the ari
       if (!e.saved) {
-        var button = $("<button>").attr({ class: "btn btn-danger save-article", 'data-id': e._id }).data("id", e.id).append("Save Article")
+        var button = $("<button>").attr({ class: "btn btn-success save-article", 'data-id': e._id }).data("id", e.id).append("Save Article")
         cardBody.append(button)
       }
       else if (e.saved) {
@@ -61,11 +64,14 @@ $(document).on("click", ".delete", function () {
 $(document).on("click", ".notes", function () {
   var id = $(this).data("id")
   $.getJSON(`/api/article/${id}`, function (res) {
+    console.log(res)
     $(".modal-title").text("Notes for:" + res.headLine)
     $(".newNote").attr('data-id', id)
     if (res.note) {
       res.note.forEach(e => {
         var note = $("<li>").attr({ class: "list-group-item" }).append(e.body)
+        var deleteButton = $("<button>").attr({ class: "btn btn-outline-danger btn-sm float-right deleteNote", 'data-id': e._id }).append("X")
+        note.append(deleteButton)
         $(".list-group").append(note)
       })
     }
@@ -80,19 +86,30 @@ $(".newNote").on("click", function () {
     body: note
   }
   $.post('/api/article/note/', data, function (data) {
-    resetModal()
+
   })
   $('#myModal').modal('hide');
+  resetModal()
 })
 
 
 $(".closeIt").on("click", function () {
   resetModal()
 })
-
 function resetModal() {
   $(".list-group").empty()
   $("#message-text").val('')
   $(".newNote").data("id", "")
-
 }
+
+$(document).on("click", ".deleteNote", function () {
+  var id = $(this).data("id")
+  $.ajax({
+    url: `api/note/`,
+    type: 'DELETE',
+    data: { id: id }
+  });
+
+  $('#myModal').modal('hide');
+  resetModal()
+})
