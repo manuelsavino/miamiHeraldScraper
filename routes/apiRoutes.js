@@ -5,7 +5,8 @@ var cheerio = require("cheerio");
 var request = require("request");
 
 /* GET users listing. */
-router.get("/scrape", function (req, res, next) {
+router.get("/scrape", function (req, res) {
+  var results = []
   request("https://www.miamiherald.com/news/", function (err, resp, html) {
     var $ = cheerio.load(html);
     $("#story-list article").each(function (i, element) {
@@ -32,33 +33,51 @@ router.get("/scrape", function (req, res, next) {
         .children(".posterframe-wrapper")
         .children("img")
         .attr("src");
-      db.Article.findOne({headLine: article.headLine}).then(resp => {
-        if(!resp){
-          console.log("Not FOunds, creating")
-          db.Article.create(article).then(function (dbArticle) {});
-        }else{
-          console.log("already in there")
-        }
+
+      results.push(article)
+    });//ends each loop
+
+    function saveToDb(results) {
+
+
+      return new Promise((resolve, reject) => {
+        results.forEach(e => {
+          db.Article.findOne({ headLine: e.headLine }, (err, resp) => {
+            if (err) {
+              console.log(err)
+            }
+            if (!resp) {
+              db.Article.create(e, function (err, dbArticle) {
+                if (err) {
+                  console.log(err)
+                }
+              });
+            } else {
+              console.log("already in there")
+            }
+          })//ends findOne 
+        })
+        resolve()
       })
-      
-    });
+    }//ends savetoDb function
+    saveToDb(results).then(res.redirect("/"))
   });
 
-  res.sendStatus(200);
-  
+
+
 
 });
 
 router.put("/article/", function (req, res) {
+  console.log("saving Article")
   var id = req.body.id;
-  //   console.log(id);
-  //   db.Article.findOneAndUpdate({_id: id, {$set:{saved: req.params.saved}}})
-  db.Article.findOneAndUpdate({ _id: id }, { $set: { saved: true } }, function (
-    err,
-    doc
-  ) {
+  db.Article.findOneAndUpdate({ _id: id }, { $set: { saved: true } }, function (err, doc) {
     if (err) {
       console.log("Something wrong when updating data!");
+      res.sendStatus(500)
+    }
+    else {
+      res.sendStatus(200)
     }
   });
 });
@@ -73,27 +92,40 @@ router.delete("/article/", function (req, res) {
 
 })
 
-router.get("/article/:status", function (req, res) {
+//get all articles based on saved or not status
+router.get("/article/status/:status", function (req, res) {
   var status = req.params.status
   var query = null
-  if (status === "unsaved")
-  {
+  if (status === "unsaved") {
     query = false
   }
-  else{
+  else {
     query = true
   }
-  db.Article.find({saved: query}).then(function (resp) {
+  db.Article.find({ saved: query }).then(function (resp) {
     res.json(resp)
-    console.log("getRoute")
   })
 })
 
-router.get("/savedArticle", function (req, res) {
-  db.Article.find({saved: true}).then(function (resp) {
+router.get("/article/:id", function (req, res) {
+  var id = req.params.id
+  db.Article.findOne({ _id: id }).populate("note").exec(function (err, resp) {
     res.json(resp)
-    console.log("getRoute")
   })
+})
+
+
+router.post("/article/note", function (req, res) {
+  console.log("post route hi")
+  console.log(req.body)
+
+  db.Note.create({ body: req.body.body }, function (err, note) {
+    db.Article.findOneAndUpdate({ _id: req.body.id }, { $push: { note: note._id } })
+      .then(function (updatedArtice) {
+        res.sendStatus(200)
+      })
+  })
+
 })
 
 module.exports = router;

@@ -1,7 +1,6 @@
 function getArticles(saved) {
-  console.log("get articles called")
   $("#results").empty()
-  $.getJSON(`/api/article/${saved}`, function (res) {
+  $.getJSON(`/api/article/status/${saved}`, function (res) {
     var rowElement = $("<div>").attr({ class: "row" })
     res.forEach(function (e) {
       var col = $("<div>").attr({ class: "col-lg-3 col-md-4" })
@@ -13,12 +12,11 @@ function getArticles(saved) {
       var cardP = $("<p>").attr({ class: "card-test" }).append(e.summary.slice(0, 100))
       cardBody.append(cardHeading)
       cardBody.append(cardP)
-      if(!e.saved){
+      if (!e.saved) {
         var button = $("<button>").attr({ class: "btn btn-danger save-article", 'data-id': e._id }).data("id", e.id).append("Save Article")
         cardBody.append(button)
       }
-      else if(e.saved)
-      {
+      else if (e.saved) {
         var notesButton = $("<button>").attr({ class: "btn btn-primary notes", 'data-id': e._id }).data("id", e.id).append("Notes")
         var deleteButton = $("<button>").attr({ class: "btn btn-danger delete", 'data-id': e._id }).data("id", e.id).append("X")
         cardBody.append(notesButton)
@@ -32,36 +30,69 @@ function getArticles(saved) {
   })
 }
 
-  
-  $(".scrape").on("click", function () {
-    $.get(`api/scrape/`,function(){
-      getArticles("unsaved");
-    });
-  })
 
-  $(document).on("click", ".save-article", function () {
-    var id = $(this).data("id");
-    $.ajax({
-      url: `api/article/`,
-      type: "PUT",
-      data: {id: id, saved: true }
-    });
-    getArticles("unsaved")
+$(".scrape").on("click", function () {
+  $.get(`api/scrape/`, function () {
+    getArticles("unsaved");
   });
+})
 
-  $(document).on("click", ".delete", function () {
-    console.log("delete")
-    var id = $(this).data("id");
-    $.ajax({
-      url: `api/article/`,
-      type: 'DELETE',
-      data: { id: id }
-    });
-    getArticles("saved")
+$(document).on("click", ".save-article", function () {
+  var id = $(this).data("id");
+  $.ajax({
+    url: `api/article/`,
+    type: "PUT",
+    data: { id: id, saved: true }
   });
+  getArticles("unsaved")
+});
+
+$(document).on("click", ".delete", function () {
+  var id = $(this).data("id");
+  $.ajax({
+    url: `api/article/`,
+    type: 'DELETE',
+    data: { id: id }
+  });
+  getArticles("saved")
+});
 
 
-  $(document).on("click", ".notes", function(){
-    $('#myModal').modal('show');
+$(document).on("click", ".notes", function () {
+  var id = $(this).data("id")
+  $.getJSON(`/api/article/${id}`, function (res) {
+    $(".modal-title").text("Notes for:" + res.headLine)
+    $(".newNote").attr('data-id', id)
+    if (res.note) {
+      res.note.forEach(e => {
+        var note = $("<li>").attr({ class: "list-group-item" }).append(e.body)
+        $(".list-group").append(note)
+      })
+    }
   })
+  $('#myModal').modal('show');
+})
 
+$(".newNote").on("click", function () {
+  var note = $("#message-text").val()
+  var data = {
+    id: $(this).data("id"),
+    body: note
+  }
+  $.post('/api/article/note/', data, function (data) {
+    resetModal()
+  })
+  $('#myModal').modal('hide');
+})
+
+
+$(".closeIt").on("click", function () {
+  resetModal()
+})
+
+function resetModal() {
+  $(".list-group").empty()
+  $("#message-text").val('')
+  $(".newNote").data("id", "")
+
+}

@@ -9,10 +9,10 @@ var articleSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  note: {
+  note: [{
     type: String,
     ref: "Note"
-  }
+  }]
 });
 
 var Article = mongoose.model("Article", articleSchema);
