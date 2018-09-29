@@ -21,3 +21,16 @@
   bottom: 10;
   right: 20;
 }
+
+.card-body{
+  padding: 1rem;
+}
+
+#alertArea{
+  position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+}
+
+

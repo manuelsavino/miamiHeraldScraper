@@ -59,7 +59,7 @@ router.get("/scrape", function (req, res) {
         resolve()
       })
     }//ends savetoDb function
-    saveToDb(results).then(res.redirect("/"))
+    saveToDb(results).then(res.status(200).end())
   });
 
 

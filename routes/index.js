@@ -13,7 +13,7 @@ router.get("/", function (req, res) {
 router.get("/saved", function (req, res) {
 
   db.Article.find({ saved: true }).then(function (resp) {
-    res.render("saved", { articles: resp });
+    res.render("saved");
   });
   // res.render("saved")
 })

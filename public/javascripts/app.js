@@ -7,12 +7,19 @@ function getArticles(saved) {
     res.forEach(function (e) {
       var col = $("<div>").attr({ class: "col-lg-3 col-md-4" })
       var card = $("<div>").attr({ class: "card mx-auto my-2", style: "width: 17rem; height: 20rem;" })
+      // if (e.imgURL) {
+      //   var img = $("<img>").attr({ class: "card-img-top", src: e.imgURL })
+      //   card.append(img)
+      // }
       var cardBody = $("<div>").attr({ class: "card-body" })
       var link = $("<a>").attr({ href: e.url }).append(e.headLine)
       var cardHeading = $("<h5>").attr({ class: "card-title" })
       cardHeading.append(link)
-      var cardP = $("<p>").attr({ class: "card-test" }).append(e.summary.slice(0, 100))
       cardBody.append(cardHeading)
+      // if (!e.imgURL) {
+      var cardP = $("<p>").attr({ class: "card-test" }).append(e.summary.slice(0, 100))
+      // }
+
       cardBody.append(cardP)
       //if the ari
       if (!e.saved) {
@@ -39,6 +46,7 @@ $(".scrape").on("click", function () {
     getArticles("unsaved");
   });
 })
+
 
 $(document).on("click", ".save-article", function () {
   var id = $(this).data("id");
@@ -85,22 +93,31 @@ $(".newNote").on("click", function () {
     id: $(this).data("id"),
     body: note
   }
-  $.post('/api/article/note/', data, function (data) {
+  console.log("before Post")
+  if (data.body) {
+    console.log("calling post")
+    $.post('/api/article/note/', data, function (data) {
 
-  })
+    })
+  }
   $('#myModal').modal('hide');
-  resetModal()
 })
 
 
 $(".closeIt").on("click", function () {
-  resetModal()
+  // resetModal()
 })
+
 function resetModal() {
+
+}
+
+$("#myModal").on("hidden.bs.modal", function () {
   $(".list-group").empty()
   $("#message-text").val('')
   $(".newNote").data("id", "")
-}
+  console.log("modal closed")
+})
 
 $(document).on("click", ".deleteNote", function () {
   var id = $(this).data("id")
