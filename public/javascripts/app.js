@@ -47,6 +47,7 @@ $(".scrape").on("click", function () {
 })
 
 
+
 //save article
 $(document).on("click", ".save-article", function () {
   var id = $(this).data("id");
