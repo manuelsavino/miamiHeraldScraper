@@ -40,7 +40,6 @@ function getArticles(saved) {
   })
 }
 
-
 $(".scrape").on("click", function () {
   $.get(`api/scrape/`, function () {
     getArticles("unsaved");
@@ -48,6 +47,7 @@ $(".scrape").on("click", function () {
 })
 
 
+//save article
 $(document).on("click", ".save-article", function () {
   var id = $(this).data("id");
   $.ajax({
@@ -58,6 +58,8 @@ $(document).on("click", ".save-article", function () {
   getArticles("unsaved")
 });
 
+
+//deletes article
 $(document).on("click", ".delete", function () {
   var id = $(this).data("id");
   $.ajax({
@@ -68,13 +70,12 @@ $(document).on("click", ".delete", function () {
   getArticles("saved")
 });
 
-
+//when modal is opened load the title or article and any comments if they exist
 $(document).on("click", ".notes", function () {
   var id = $(this).data("id")
   $.getJSON(`/api/article/${id}`, function (res) {
-    console.log(res)
     $(".modal-title").text("Notes for:" + res.headLine)
-    $(".newNote").attr('data-id', id)
+    $(".newNote").data('id', id)
     if (res.note) {
       res.note.forEach(e => {
         var note = $("<li>").attr({ class: "list-group-item" }).append(e.body)
@@ -87,15 +88,15 @@ $(document).on("click", ".notes", function () {
   $('#myModal').modal('show');
 })
 
+//save new note
 $(".newNote").on("click", function () {
   var note = $("#message-text").val()
+  var id = $('.newNote').data("id")
   var data = {
-    id: $(this).data("id"),
+    id: id,
     body: note
   }
-  console.log("before Post")
   if (data.body) {
-    console.log("calling post")
     $.post('/api/article/note/', data, function (data) {
 
     })
@@ -104,21 +105,14 @@ $(".newNote").on("click", function () {
 })
 
 
-$(".closeIt").on("click", function () {
-  // resetModal()
-})
-
-function resetModal() {
-
-}
-
+//Clears fields in modal
 $("#myModal").on("hidden.bs.modal", function () {
   $(".list-group").empty()
   $("#message-text").val('')
   $(".newNote").data("id", "")
-  console.log("modal closed")
 })
 
+//Delete note
 $(document).on("click", ".deleteNote", function () {
   var id = $(this).data("id")
   $.ajax({
@@ -128,5 +122,4 @@ $(document).on("click", ".deleteNote", function () {
   });
 
   $('#myModal').modal('hide');
-  resetModal()
 })
