@@ -1,22 +1,16 @@
 # Miami Herald Scraper
 
-Purpose of this game is not to click the same image twice. 
-Images clicked are stored in the state of the the App component, which is the most parens component.
-If the same image is clicked twice, you lose the game
+Purpose of this app is to scrape articles form the Miami Herald website. Scraped articles are shown with a Save Article button which saves the article. On the Saved articles page, the user is able to take notes on the article on a bootstrap modal, delete the article and also delete notes created. 
 
 ### Technologies Used:
 
-
-![Express](https://i.imgur.com/f59Gfjh.png)
-![Node](https://i.imgur.com/RzqTnLl.png)
-![Bootstrap](https://i.imgur.com/1pzul7E.png)
-![MongoDB](https://i.imgur.com/nBrv1kj.png)
-![Mongoose](https://i.imgur.com/SqrzHKP.png)
-![jquery](https://i.imgur.com/UT3ZKMC.png)
-
-
-
-
+* [Cheerio](https://cheerio.js.org/)
+* NodeJS
+* Express
+* MondoDB
+* Mongoose
+* Bootstrap
+* Material Design Bootstrap
 
 ### Preview
 ![alt text](https://media.giphy.com/media/ujTH4mx3ETLqFhmVhg/giphy.gif)
