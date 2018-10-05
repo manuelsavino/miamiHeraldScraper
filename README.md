@@ -4,7 +4,7 @@ Purpose of this app is to scrape articles form the Miami Herald website. Scraped
 
 ### Technologies Used:
 
-* [Cheerio](https://cheerio.js.org/)
+* [CheerioJS](https://cheerio.js.org/)
 * NodeJS
 * Express
 * MondoDB
@@ -12,5 +12,8 @@ Purpose of this app is to scrape articles form the Miami Herald website. Scraped
 * Bootstrap
 * Material Design Bootstrap
 
-### Preview
-![alt text](https://media.giphy.com/media/ujTH4mx3ETLqFhmVhg/giphy.gif)
+#### Scraping and Saving Articles
+![alt text](https://media.giphy.com/media/35EpkcT2k7RdpKGP7x/giphy.gif)
+
+#### Creating notes on Articles
+![alt text](https://media.giphy.com/media/35EpkcT2k7RdpKGP7x/giphy.gif)
