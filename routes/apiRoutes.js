@@ -81,8 +81,18 @@ router.put("/article/", function (req, res) {
   });
 });
 
-router.delete("/article/", function (req, res) {
-  var id = req.body.id;
+//removed all articles that havnt been saved
+router.delete("/article/all", function (req, res) {
+  db.Article.remove({ saved: false }).then(function (resp) {
+    console.log(resp)
+    res.sendStatus(200);
+  })
+
+})
+
+//removes a specific article
+router.delete("/article/:id", function (req, res) {
+  var id = req.params.id;
   db.Article.findOneAndDelete({ _id: id }).then(function (resp) {
     console.log(resp)
     res.sendStatus(200);

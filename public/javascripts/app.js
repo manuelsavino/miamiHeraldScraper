@@ -23,7 +23,7 @@ function getArticles(saved) {
       cardBody.append(cardP)
       //if the ari
       if (!e.saved) {
-        var button = $("<button>").attr({ class: "btn btn-success save-article", 'data-id': e._id }).data("id", e.id).append("Save Article")
+        var button = $("<button>").attr({ class: "btn btn-elegant save-article", 'data-id': e._id }).data("id", e.id).append("Save Article")
         cardBody.append(button)
       }
       else if (e.saved) {
@@ -47,6 +47,14 @@ $(".scrape").on("click", function () {
 })
 
 
+$(".clear").on("click", function () {
+  $.ajax({
+    url: `api/article/all`,
+    type: 'DELETE'
+  });
+  $("#results").empty()
+})
+
 
 //save article
 $(document).on("click", ".save-article", function () {
@@ -64,12 +72,13 @@ $(document).on("click", ".save-article", function () {
 $(document).on("click", ".delete", function () {
   var id = $(this).data("id");
   $.ajax({
-    url: `api/article/`,
-    type: 'DELETE',
-    data: { id: id }
+    url: `api/article/${id}`,
+    type: 'DELETE'
   });
   getArticles("saved")
 });
+
+
 
 //when modal is opened load the title or article and any comments if they exist
 $(document).on("click", ".notes", function () {
