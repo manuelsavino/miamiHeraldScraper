@@ -16,4 +16,4 @@ Purpose of this app is to scrape articles form the Miami Herald website. Scraped
 ![alt text](https://media.giphy.com/media/35EpkcT2k7RdpKGP7x/giphy.gif)
 
 #### Creating notes on Articles
-![alt text](https://media.giphy.com/media/35EpkcT2k7RdpKGP7x/giphy.gif)
+![alt text](https://media.giphy.com/media/YVNrDSwWRWCkZGHYDJ/giphy.gif)
